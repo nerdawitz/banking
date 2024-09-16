@@ -23,6 +23,7 @@ import { authFormSchema } from '@/lib/utils'
 import { Spinner } from './Spinner'
 import { useRouter } from 'next/navigation'
 import { getLoggedInUser, signIn, signUp } from '@/lib/actions/user.actions'
+import PlaidLink from './PlaidLink'
 
 
 
@@ -52,8 +53,21 @@ const AuthForm = ({ type }: {type: string}) => {
             try {
                 // sign up with appwrite & create a plaid token
 
+                const userData = {
+                    firstName: data.firstName!,
+                    lastName: data.lastName!,
+                    address1: data.address1!,
+                    city: data.city!,
+                    state: data.state!,
+                    postalCode: data.postalCode!,
+                    dateOfBirth: data.dateOfBirth!,
+                    ssn: data.ssn!,
+                    email: data.email,
+                    password: data.password,
+                }
+
                 if(type === "sign-up") {
-                    const newUser = await signUp(data);
+                    const newUser = await signUp(userData);
                     setUser(newUser);
                 }
 
@@ -105,7 +119,7 @@ const AuthForm = ({ type }: {type: string}) => {
 
         {user ? (
             <div className='flex flex-col gap-4'>
-                {/* PlaidLink */}
+                <PlaidLink user={user} variant='primary' />
             </div>
         ): (
             <>
@@ -148,7 +162,7 @@ const AuthForm = ({ type }: {type: string}) => {
                                     type="text"
                                 />
 
-                                <div>
+                                <div className='flex gap-4'>
                                     <CustomInput
                                         control={form.control}
                                         name="state"
@@ -175,8 +189,8 @@ const AuthForm = ({ type }: {type: string}) => {
                                     /> 
                                     <CustomInput
                                         control={form.control}
-                                        name="sin"
-                                        label="SIN"
+                                        name="ssn"
+                                        label="SSN"
                                         placeholder="Example: 1234"
                                         type="text"
                                     />
